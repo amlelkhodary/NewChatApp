@@ -19,7 +19,7 @@ private slots:
     void clientCanReceive(); // a private slot inside the model used to emit the message after connecting the client
 
 private:
-    QTcpSocket *clientSocket = nullptr;
+    QTcpSocket *clientSocket;
 
 };
 

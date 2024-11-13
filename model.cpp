@@ -2,6 +2,7 @@
 #include "qobject.h"
 
 Model::Model(QObject *parent) : QObject(parent){
+    clientSocket = new QTcpSocket(this);
     connect(clientSocket, &QTcpSocket::readyRead, this, &Model::clientCanReceive); //connect the client to start receiving from server
 }
 

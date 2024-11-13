@@ -32,7 +32,7 @@ private:
     Ui::MainWindow *ui;
     Presenter *presenter;
     QThread *serverThread;
-    TcpServer *server;
+    TcpServer server;
     QString ipAddress = "127.0.0.1";
     quint16 port = 1235;
 };

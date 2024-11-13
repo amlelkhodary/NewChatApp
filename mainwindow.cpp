@@ -8,7 +8,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QStringList userOptions("Run as Client and Server","Run as Client Only");
+    QStringList userOptions;
+    userOptions << "Run as Client and Server" << "Run as Client Only";
     bool okButtonPressed;
     QString userChoice = QInputDialog::getItem(this, "Dialog Window for the user", "Choose an option",userOptions,0,false,&okButtonPressed);
     if(okButtonPressed){
@@ -17,17 +18,18 @@ MainWindow::MainWindow(QWidget *parent)
         ui->inputLineEdit->setEnabled(false);
         ui->inputLineEdit->setPlaceholderText("Type Something");
         ui->chatDisplay->setReadOnly(true);
+
+        presenter = new Presenter(this);
         connect(ui->connectButton, &QPushButton::clicked, this, &MainWindow::connectButtonPressed);
         connect(ui->sendButton, &QPushButton::clicked, this, &MainWindow::sendButtonPressed);
         connect(ui->inputLineEdit, &QLineEdit::returnPressed, this, &MainWindow::sendButtonPressed);
         connect(ui->inputLineEdit, &QLineEdit::textChanged, this, &MainWindow::userStartTyping);
-        presenter = new Presenter(this);
         connect(presenter, &Presenter::newMessageReceived, this, &MainWindow::displayReceivedMessage); //When new message arrived to the server, then forward it to the other client
 
         if(userChoice == "Run as Client and Server"){
             serverThread = new QThread(this);
-            server = new TcpServer(); //No viable overloaded error when it's not a pointer
-            server->moveToThread(serverThread);
+            //server = new TcpServer(); //No viable overloaded error when it's not a pointer
+            server.moveToThread(serverThread);
             connect(serverThread, &QThread::started, this, &MainWindow::onServerStarted);  //if the server thread started, create a message box and enable the connect button for clients
             serverThread->start();
         }
@@ -36,8 +38,8 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 void MainWindow::connectButtonPressed() {
-    ui->inputLineEdit->setEnabled(true);
     presenter->connectClient(ipAddress,port);
+    //ui->inputLineEdit->setEnabled(true);
 }
 void MainWindow::sendButtonPressed() {
     QString message = ui->inputLineEdit->text();
@@ -53,7 +55,8 @@ void MainWindow::userStartTyping() {
 
 void MainWindow::onServerStarted()
 {
-    QMessageBox::information(this, "Server Started", &"Server is now running on port "[port]);
+    QMessageBox::information(this, "Server Started", "Server is now running on port 1235"); //when server started, create a message box that shows information about the server
+    // QMessageBox::information(this, "Server Started", QString("Server is now running on port %1").arg(port));
     ui->connectButton->setEnabled(true);
 }
 

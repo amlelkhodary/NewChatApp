@@ -35,6 +35,8 @@ void TcpServer::forwardReceivedMessage(){
             client->write(data); // Send the message to the client
         }
     }
+
+
 }
 void TcpServer::removeTheClient(){
     QTcpSocket *clientSocket = qobject_cast<QTcpSocket *>(sender());
