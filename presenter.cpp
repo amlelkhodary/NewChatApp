@@ -29,7 +29,6 @@ void Presenter::createThreadForServer(){
     server->moveToThread(serverThread);
     serverThread->start();
     connect(serverThread,&QThread::started,this,&Presenter::serverStarted);
-
     // emit serverStarted();
     // std::thread serverThread(&TcpServer::startTcpServer, &server);
     // serverThread.join();

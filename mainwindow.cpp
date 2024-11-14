@@ -25,13 +25,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) , ui(new Ui::MainWi
         connect(presenter, &Presenter::messageReceivedFromOtherClient, this, &MainWindow::displayReceivedMessage); //When new message arrived to the server, then forward it to the other client
 
         if(userChoice == "Run as Client and Server"){
-            serverThread = new QThread(this);
-            server = new TcpServer(); //No viable overloaded error when it's not a pointer
-            server->moveToThread(serverThread);
-            connect(serverThread,&QThread::started,this, &MainWindow::onServerStarted);
-            serverThread->start();
-            // presenter->createThreadForServer();
-            // connect(presenter, &Presenter::serverStarted, this, &MainWindow::onServerStarted);  //if the server thread started, create a message box and enable the connect button for clients
+            presenter->createThreadForServer();
+            connect(presenter, &Presenter::serverStarted, this, &MainWindow::onServerStarted);  //if the server thread started, create a message box and enable the connect button for clients
         }
     }
 
