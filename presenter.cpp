@@ -1,6 +1,6 @@
 #include "presenter.h"
 
-Presenter::Presenter(QObject *parent) : QObject(parent){
+Presenter::Presenter(QObject *parent) : QObject(parent), server(parent){
     clientSocket = new QTcpSocket(this);
     // Move the client socket to the current (main) thread
     // clientSocket->moveToThread(QThread::currentThread());
@@ -19,17 +19,11 @@ void Presenter::sendMessageToServer(const QString &message){
 void Presenter::clientCanReceiveMessages(){
     QByteArray data = clientSocket->readAll();
     QString receivedMessage = QString::fromUtf8(data);
-    // connect(clientSocket,&QTcpSocket::readAll,this,&Presenter::messageReceivedFromOtherClient);
     emit messageReceivedFromOtherClient(receivedMessage);
 }
 
 void Presenter::createThreadForServer(){
-    serverThread = new QThread(this);
-    server = new TcpServer(); //No viable overloaded error when it's not a pointer
-    server->moveToThread(serverThread);
-    serverThread->start();
-    connect(serverThread,&QThread::started,this,&Presenter::serverStarted);
-    // emit serverStarted();
-    // std::thread serverThread(&TcpServer::startTcpServer, &server);
-    // serverThread.join();
+    std::thread serverThread(&TcpServer::startTcpServer, &server);
+    serverThread.join();
+    connect(&server,&TcpServer::threadCompleted,this,&Presenter::serverStarted);
 }

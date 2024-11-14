@@ -31,7 +31,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Presenter *presenter;
-    QThread *serverThread;
-    TcpServer *server;
+    // QThread *serverThread;
+    // TcpServer *server;
 };
 #endif // MAINWINDOW_H

@@ -24,8 +24,10 @@ private slots:
 private:
     IView *view; //it's not allowed to take instance object from an abstract class
     QTcpSocket *clientSocket = nullptr;
-    QThread *serverThread;
-    TcpServer *server;
+    TcpServer server;
+    std::thread serverThread;
+    // QThread *serverThread;
+    // TcpServer *server;
 };
 
 #endif // PRESENTER_H

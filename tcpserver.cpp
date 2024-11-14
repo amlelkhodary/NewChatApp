@@ -1,19 +1,8 @@
 #include "tcpserver.h"
 
 TcpServer::TcpServer(QObject *parent) : QObject(parent) {
-    serverSocket = new QTcpServer(this); //QTcp instance
-    connect(serverSocket, &QTcpServer::newConnection, this, &TcpServer::handleClientConnection);  //Function to handle new client conection
-
-    QString ipAddress = "127.0.0.1"; // Replace with your desired IP address
-    QHostAddress hostAddress(ipAddress);
-    quint16 port = 1235;
-    if (!serverSocket->listen(hostAddress, port)) {
-        qCritical() << "Server failed to start!";
-        return;
-    }
-    qDebug() << "Server started on IP" << ipAddress << "and port "<<port;
-
 }
+
 void TcpServer::startTcpServer(){
     serverSocket = new QTcpServer(this); //QTcp instance
     connect(serverSocket, &QTcpServer::newConnection, this, &TcpServer::handleClientConnection);  //Function to handle new client conection
@@ -26,6 +15,7 @@ void TcpServer::startTcpServer(){
         return;
     }
     qDebug() << "Server started on IP" << ipAddress << "and port "<<port;
+    emit threadCompleted();
 }
 void TcpServer::handleClientConnection(){
     QTcpSocket *clientSocket = serverSocket->nextPendingConnection();
@@ -33,8 +23,6 @@ void TcpServer::handleClientConnection(){
     clients.append(clientSocket);
     connect(clientSocket, &QTcpSocket::readyRead, this, &TcpServer::forwardReceivedMessage);  //Reading messages from clients
     connect(clientSocket, &QTcpSocket::disconnected, this, &TcpServer::removeTheClient);
-
-
     qDebug() << "New client connected";
 }
 void TcpServer::forwardReceivedMessage(){

@@ -8,6 +8,7 @@
 
 class TcpServer : public QObject
 {
+    Q_OBJECT
 public:
     TcpServer(QObject *parent = nullptr);
     void startTcpServer();
@@ -15,6 +16,7 @@ public:
 signals:
     void serverStarted();
     void newMessageReceived();
+    void threadCompleted();
 
 private slots:
     void handleClientConnection();
