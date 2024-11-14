@@ -1,20 +1,31 @@
 #ifndef PRESENTER_H
 #define PRESENTER_H
-#include "model.h"
 #include "IView.h"
+#include <QTcpSocket> //for clients
+#include <thread>
+#include "tcpserver.h"
 
 class Presenter : public QObject
 {
     Q_OBJECT
 public:
     Presenter(QObject *parent = nullptr);
-    void sendMessageFromClientToServer(const QString &message);
-    void connectClient(const QString &ip, int port);
+    void connectClientToServer(const QString &host, int port);
+    void sendMessageToServer(const QString &message);
+    void createThreadForServer();
+
 signals:
-    void newMessageReceived(const QString &message);
+    void messageReceivedFromOtherClient(const QString &message); //Signals not implemented.. just emitted
+    void serverStarted();
+
+private slots:
+    void clientCanReceiveMessages(); // a private slot inside the model used to emit the message after connecting the client
+
 private:
     IView *view; //it's not allowed to take instance object from an abstract class
-    Model *model;
+    QTcpSocket *clientSocket = nullptr;
+    QThread *serverThread;
+    TcpServer *server;
 };
 
 #endif // PRESENTER_H

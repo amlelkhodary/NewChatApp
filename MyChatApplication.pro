@@ -11,14 +11,12 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    model.cpp \
     presenter.cpp \
     tcpserver.cpp
 
 HEADERS += \
     IView.h \
     mainwindow.h \
-    model.h \
     presenter.h \
     tcpserver.h
 
